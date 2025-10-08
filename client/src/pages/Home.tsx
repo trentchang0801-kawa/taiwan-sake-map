@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Wine, Beer, Grape, TrendingUp, Map } from "lucide-react";
+import { Wine, Beer, Grape, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import ReviewPost from "@/components/ReviewPost";
 import CreateReviewDialog from "@/components/CreateReviewDialog";
+import TaiwanMap from "@/components/TaiwanMap";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
 
 const mockReviews = [
   {
@@ -102,43 +102,22 @@ export default function Home() {
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-foreground">
             台灣地酒社群
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-xl text-muted-foreground mb-12">
             記錄你的品酒時刻，分享美好體驗
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <CreateReviewDialog />
-            <Link href="/rankings">
-              <Button variant="outline" size="lg" className="gap-2" data-testid="button-rankings">
-                <TrendingUp className="h-5 w-5" />
-                查看排行榜
-              </Button>
-            </Link>
-            <Link href="/map">
-              <Button variant="outline" size="lg" className="gap-2" data-testid="button-map">
-                <Map className="h-5 w-5" />
-                探索地圖
-              </Button>
-            </Link>
-          </div>
+          <Link href="/rankings">
+            <Button size="lg" className="gap-2 text-lg px-8 py-6 h-auto" data-testid="button-rankings">
+              <TrendingUp className="h-6 w-6" />
+              查看排行榜
+            </Button>
+          </Link>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
-            <Card className="p-6 text-center">
-              <div className="text-3xl mb-3">🍶</div>
-              <h3 className="font-bold mb-2">品嚐</h3>
-              <p className="text-sm text-muted-foreground">享受台灣地酒的美好</p>
-            </Card>
-            <Card className="p-6 text-center">
-              <div className="text-3xl mb-3">📸</div>
-              <h3 className="font-bold mb-2">拍照</h3>
-              <p className="text-sm text-muted-foreground">記錄精彩的品酒瞬間</p>
-            </Card>
-            <Card className="p-6 text-center">
-              <div className="text-3xl mb-3">✍️</div>
-              <h3 className="font-bold mb-2">分享</h3>
-              <p className="text-sm text-muted-foreground">發表感想與搭餐建議</p>
-            </Card>
-          </div>
+      <section className="py-8 px-4 bg-muted/30">
+        <div className="max-w-7xl mx-auto text-center">
+          <CreateReviewDialog />
         </div>
       </section>
 
@@ -170,6 +149,25 @@ export default function Home() {
             {filteredReviews.map((review) => (
               <ReviewPost key={review.id} {...review} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 px-4 bg-muted/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">探索台灣地酒地圖</h2>
+            <p className="text-muted-foreground">點擊地圖探索各地酒莊</p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <TaiwanMap />
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/map">
+              <Button variant="outline" size="lg" data-testid="button-view-map">
+                查看完整地圖
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

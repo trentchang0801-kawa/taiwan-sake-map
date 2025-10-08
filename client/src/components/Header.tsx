@@ -1,17 +1,11 @@
 import { Link, useLocation } from "wouter";
-import { Moon, Sun, TrendingUp } from "lucide-react";
+import { Moon, Sun, TrendingUp, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "./ThemeProvider";
 
 export default function Header() {
   const [location] = useLocation();
   const { theme, toggleTheme } = useTheme();
-
-  const categories = [
-    { name: "清酒", path: "/category/sake" },
-    { name: "精釀啤酒", path: "/category/beer" },
-    { name: "葡萄酒", path: "/category/wine" },
-  ];
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
@@ -26,25 +20,24 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-2">
-            {categories.map((category) => (
-              <Link key={category.path} href={category.path} data-testid={`link-${category.name}`}>
-                <Button
-                  variant={location === category.path ? "secondary" : "ghost"}
-                  size="sm"
-                  className="font-medium"
-                >
-                  {category.name}
-                </Button>
-              </Link>
-            ))}
             <Link href="/rankings" data-testid="link-rankings">
               <Button
-                variant={location === "/rankings" ? "secondary" : "ghost"}
+                variant={location.startsWith("/rankings") ? "secondary" : "ghost"}
                 size="sm"
                 className="gap-2"
               >
                 <TrendingUp className="h-4 w-4" />
                 排行榜
+              </Button>
+            </Link>
+            <Link href="/map" data-testid="link-map">
+              <Button
+                variant={location === "/map" ? "secondary" : "ghost"}
+                size="sm"
+                className="gap-2"
+              >
+                <Map className="h-4 w-4" />
+                地酒地圖
               </Button>
             </Link>
           </nav>

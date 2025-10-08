@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { Wine, Beer, Grape, Trophy } from "lucide-react";
 import RankingCard from "@/components/RankingCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy } from "lucide-react";
 
 const mockRankings = {
   清酒: [
@@ -174,9 +174,18 @@ export default function Rankings() {
 
         <Tabs value={selectedType} onValueChange={(v) => setSelectedType(v as keyof typeof mockRankings)}>
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
-            <TabsTrigger value="清酒" data-testid="tab-sake-rankings">清酒</TabsTrigger>
-            <TabsTrigger value="精釀啤酒" data-testid="tab-beer-rankings">精釀啤酒</TabsTrigger>
-            <TabsTrigger value="葡萄酒" data-testid="tab-wine-rankings">葡萄酒</TabsTrigger>
+            <TabsTrigger value="清酒" data-testid="tab-sake-rankings">
+              <Wine className="h-4 w-4 mr-1" />
+              清酒
+            </TabsTrigger>
+            <TabsTrigger value="精釀啤酒" data-testid="tab-beer-rankings">
+              <Beer className="h-4 w-4 mr-1" />
+              精釀啤酒
+            </TabsTrigger>
+            <TabsTrigger value="葡萄酒" data-testid="tab-wine-rankings">
+              <Grape className="h-4 w-4 mr-1" />
+              葡萄酒
+            </TabsTrigger>
           </TabsList>
 
           <div className="max-w-3xl mx-auto space-y-3">
