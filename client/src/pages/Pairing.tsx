@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Wine, Beer, Grape, UtensilsCrossed } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const pairingSuggestions = {
+const byAlcoholType = {
   清酒: [
     {
       category: "海鮮料理",
@@ -65,7 +66,84 @@ const pairingSuggestions = {
   ],
 };
 
+const byFoodType = {
+  海鮮料理: [
+    {
+      alcohol: "清酒",
+      name: "純米吟釀",
+      description: "清爽口感，完美襯托海鮮鮮甜",
+      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=800&q=80",
+    },
+    {
+      alcohol: "葡萄酒",
+      name: "白葡萄酒",
+      description: "酸度適中，提升海鮮風味",
+      image: "https://images.unsplash.com/photo-1566995541428-6a0d44c98631?w=800&q=80",
+    },
+  ],
+  肉類料理: [
+    {
+      alcohol: "葡萄酒",
+      name: "紅葡萄酒",
+      description: "單寧豐富，搭配紅肉更顯層次",
+      image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80",
+    },
+    {
+      alcohol: "精釀啤酒",
+      name: "深色啤酒",
+      description: "麥香濃郁，平衡肉類油脂",
+      image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=800&q=80",
+    },
+  ],
+  燒烤料理: [
+    {
+      alcohol: "精釀啤酒",
+      name: "IPA",
+      description: "苦味解膩，搭配燒烤一絕",
+      image: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=800&q=80",
+    },
+    {
+      alcohol: "清酒",
+      name: "本釀造",
+      description: "醇厚口感，提升燒烤風味",
+      image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800&q=80",
+    },
+  ],
+  台式料理: [
+    {
+      alcohol: "清酒",
+      name: "純米酒",
+      description: "米香濃郁，與台菜完美融合",
+      image: "https://images.unsplash.com/photo-1606491048867-c4cea2a87d6f?w=800&q=80",
+    },
+    {
+      alcohol: "精釀啤酒",
+      name: "小麥啤酒",
+      description: "清爽順口，搭配熱炒最佳",
+      image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=800&q=80",
+    },
+  ],
+  西式料理: [
+    {
+      alcohol: "葡萄酒",
+      name: "紅/白葡萄酒",
+      description: "經典搭配，提升用餐體驗",
+      image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80",
+    },
+  ],
+  日式料理: [
+    {
+      alcohol: "清酒",
+      name: "吟釀/大吟釀",
+      description: "香氣優雅，與日料天作之合",
+      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=800&q=80",
+    },
+  ],
+};
+
 export default function Pairing() {
+  const [viewMode, setViewMode] = useState<"alcohol" | "food">("alcohol");
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -74,68 +152,130 @@ export default function Pairing() {
             <UtensilsCrossed className="h-8 w-8 text-primary" />
             <h1 className="text-4xl font-bold">搭餐建議</h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-8">
             找到最適合你的酒食搭配
           </p>
+
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => setViewMode("alcohol")}
+              className={`px-6 py-2 rounded-lg transition-colors ${
+                viewMode === "alcohol"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover-elevate"
+              }`}
+              data-testid="button-view-by-alcohol"
+            >
+              依酒種分類
+            </button>
+            <button
+              onClick={() => setViewMode("food")}
+              className={`px-6 py-2 rounded-lg transition-colors ${
+                viewMode === "food"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover-elevate"
+              }`}
+              data-testid="button-view-by-food"
+            >
+              依食物類型分類
+            </button>
+          </div>
         </div>
 
-        <Tabs defaultValue="清酒" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
-            <TabsTrigger value="清酒" data-testid="tab-sake-pairing">
-              <Wine className="h-4 w-4 mr-1" />
-              清酒
-            </TabsTrigger>
-            <TabsTrigger value="精釀啤酒" data-testid="tab-beer-pairing">
-              <Beer className="h-4 w-4 mr-1" />
-              精釀啤酒
-            </TabsTrigger>
-            <TabsTrigger value="葡萄酒" data-testid="tab-wine-pairing">
-              <Grape className="h-4 w-4 mr-1" />
-              葡萄酒
-            </TabsTrigger>
-          </TabsList>
+        {viewMode === "alcohol" ? (
+          <Tabs defaultValue="清酒" className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
+              <TabsTrigger value="清酒" data-testid="tab-sake-pairing">
+                <Wine className="h-4 w-4 mr-1" />
+                清酒
+              </TabsTrigger>
+              <TabsTrigger value="精釀啤酒" data-testid="tab-beer-pairing">
+                <Beer className="h-4 w-4 mr-1" />
+                精釀啤酒
+              </TabsTrigger>
+              <TabsTrigger value="葡萄酒" data-testid="tab-wine-pairing">
+                <Grape className="h-4 w-4 mr-1" />
+                葡萄酒
+              </TabsTrigger>
+            </TabsList>
 
-          {Object.entries(pairingSuggestions).map(([type, suggestions]) => (
-            <TabsContent key={type} value={type}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {suggestions.map((suggestion, index) => (
-                  <Card
-                    key={index}
-                    className="overflow-hidden hover-elevate transition-all"
-                    data-testid={`pairing-card-${index}`}
-                  >
-                    <div className="relative aspect-video overflow-hidden">
-                      <img
-                        src={suggestion.image}
-                        alt={suggestion.category}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <h3 className="absolute bottom-4 left-4 text-white font-bold text-xl">
-                        {suggestion.category}
-                      </h3>
-                    </div>
-                    <div className="p-6">
-                      <p className="text-muted-foreground mb-4">
-                        {suggestion.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {suggestion.items.map((item, itemIndex) => (
-                          <div
-                            key={itemIndex}
-                            className="px-3 py-1 bg-muted rounded-full text-sm"
-                          >
-                            {item}
-                          </div>
-                        ))}
+            {Object.entries(byAlcoholType).map(([type, suggestions]) => (
+              <TabsContent key={type} value={type}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {suggestions.map((suggestion, index) => (
+                    <Card
+                      key={index}
+                      className="overflow-hidden hover-elevate transition-all"
+                      data-testid={`pairing-card-${index}`}
+                    >
+                      <div className="relative aspect-video overflow-hidden">
+                        <img
+                          src={suggestion.image}
+                          alt={suggestion.category}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <h3 className="absolute bottom-4 left-4 text-white font-bold text-xl">
+                          {suggestion.category}
+                        </h3>
                       </div>
-                    </div>
-                  </Card>
-                ))}
+                      <div className="p-6">
+                        <p className="text-muted-foreground mb-4">
+                          {suggestion.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {suggestion.items.map((item, itemIndex) => (
+                            <div
+                              key={itemIndex}
+                              className="px-3 py-1 bg-muted rounded-full text-sm"
+                            >
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          <div className="space-y-8">
+            {Object.entries(byFoodType).map(([foodType, alcohols]) => (
+              <div key={foodType}>
+                <h2 className="text-2xl font-bold mb-4">{foodType}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {alcohols.map((item, index) => (
+                    <Card
+                      key={index}
+                      className="overflow-hidden hover-elevate transition-all"
+                      data-testid={`food-pairing-card-${index}`}
+                    >
+                      <div className="relative aspect-video overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-4 left-4">
+                          <div className="text-white/80 text-sm mb-1">{item.alcohol}</div>
+                          <h3 className="text-white font-bold text-xl">{item.name}</h3>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <p className="text-muted-foreground">
+                          {item.description}
+                        </p>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+            ))}
+          </div>
+        )}
 
         <section className="mt-16 max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold mb-6 text-center">搭餐小技巧</h2>

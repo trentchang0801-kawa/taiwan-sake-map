@@ -107,8 +107,8 @@ export default function Home() {
           </p>
           
           <Link href="/rankings">
-            <Button size="lg" className="gap-2 text-lg px-8 py-6 h-auto" data-testid="button-rankings">
-              <TrendingUp className="h-6 w-6" />
+            <Button size="lg" className="gap-2" data-testid="button-rankings">
+              <TrendingUp className="h-5 w-5" />
               查看排行榜
             </Button>
           </Link>
