@@ -33,7 +33,7 @@ export default function CreateReviewDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="gap-2" data-testid="button-create-review">
+        <Button size="lg" variant="outline" className="gap-2 bg-background" data-testid="button-create-review">
           <Camera className="h-5 w-5" />
           發表評論
         </Button>
