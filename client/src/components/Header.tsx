@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Moon, Sun, TrendingUp, Map } from "lucide-react";
+import { Moon, Sun, TrendingUp, Map, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "./ThemeProvider";
 
@@ -38,6 +38,16 @@ export default function Header() {
               >
                 <Map className="h-4 w-4" />
                 地酒地圖
+              </Button>
+            </Link>
+            <Link href="/pairing" data-testid="link-pairing">
+              <Button
+                variant={location === "/pairing" ? "secondary" : "ghost"}
+                size="sm"
+                className="gap-2"
+              >
+                <UtensilsCrossed className="h-4 w-4" />
+                搭餐建議
               </Button>
             </Link>
           </nav>

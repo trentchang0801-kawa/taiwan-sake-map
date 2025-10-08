@@ -115,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-8 px-4 bg-muted/30">
+      <section className="py-8 px-4 bg-muted/50">
         <div className="max-w-7xl mx-auto text-center">
           <CreateReviewDialog />
         </div>
