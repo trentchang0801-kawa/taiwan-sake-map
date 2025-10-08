@@ -2,10 +2,8 @@ import { useRoute } from "wouter";
 import { Star, MapPin, ExternalLink, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import ProductCard from "@/components/ProductCard";
-import ReviewCard from "@/components/ReviewCard";
+import ReviewPost from "@/components/ReviewPost";
 
 const mockBrewery = {
   id: "1",
@@ -19,48 +17,45 @@ const mockBrewery = {
   purchaseUrl: "https://example.com/shop",
 };
 
-const mockProducts = [
-  {
-    id: "1",
-    name: "純米大吟釀",
-    description: "使用台灣在地優質稻米釀造，口感清爽細緻，帶有淡雅果香。",
-    image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&q=80",
-  },
-  {
-    id: "2",
-    name: "本釀造",
-    description: "傳統釀造工藝，口感醇厚，適合搭配各式料理。",
-    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&q=80",
-  },
-  {
-    id: "3",
-    name: "吟釀清酒",
-    description: "低溫長期發酵，香氣優雅，口感柔順。",
-    image: "https://images.unsplash.com/photo-1606491048867-c4cea2a87d6f?w=400&q=80",
-  },
-];
-
 const mockReviews = [
   {
     id: "1",
     username: "王小明",
+    userAvatar: undefined,
+    breweryName: "純米大吟釀",
+    breweryId: "1",
+    region: "花蓮",
+    type: "清酒",
     rating: 5,
-    comment: "非常棒的清酒！口感清爽，香氣宜人，很適合搭配日式料理。",
-    pairingSuggestion: "生魚片、壽司、烤雞肉串",
+    comment: "非常棒的清酒！口感清爽，香氣宜人，帶有淡雅的花果香。搭配生魚片超級適合！",
+    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=800&q=80",
+    timestamp: "2小時前",
   },
   {
     id: "2",
     username: "陳美美",
+    userAvatar: undefined,
+    breweryName: "本釀造",
+    breweryId: "1",
+    region: "花蓮",
+    type: "清酒",
     rating: 4,
-    comment: "品質不錯，帶有獨特的台灣風味，值得一試。",
-    pairingSuggestion: "海鮮、冷盤、白肉魚",
+    comment: "傳統釀造工藝，口感醇厚，搭配燒烤非常適合。",
+    image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800&q=80",
+    timestamp: "1天前",
   },
   {
     id: "3",
     username: "李大華",
+    userAvatar: undefined,
+    breweryName: "吟釀清酒",
+    breweryId: "1",
+    region: "花蓮",
+    type: "清酒",
     rating: 5,
-    comment: "完全不輸給日本清酒，而且更有台灣在地特色！",
-    pairingSuggestion: "烤肉、火鍋、燒烤",
+    comment: "低溫長期發酵，香氣優雅，口感柔順。冷飲最佳！",
+    image: "https://images.unsplash.com/photo-1606491048867-c4cea2a87d6f?w=800&q=80",
+    timestamp: "3天前",
   },
 ];
 
@@ -69,7 +64,7 @@ export default function BreweryDetail() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="relative h-96 overflow-hidden">
+      <div className="relative h-80 overflow-hidden">
         <img
           src={mockBrewery.image}
           alt={mockBrewery.name}
@@ -111,79 +106,41 @@ export default function BreweryDetail() {
               </p>
             </section>
 
-            <Tabs defaultValue="products" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="products" data-testid="tab-products">品項</TabsTrigger>
-                <TabsTrigger value="reviews" data-testid="tab-reviews">評論</TabsTrigger>
-                <TabsTrigger value="pairing" data-testid="tab-pairing">搭餐建議</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="products" className="mt-6">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {mockProducts.map((product) => (
-                    <ProductCard key={product.id} {...product} />
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="reviews" className="mt-6">
-                <div className="space-y-4">
-                  {mockReviews.map((review) => (
-                    <ReviewCard key={review.id} {...review} />
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="pairing" className="mt-6">
-                <div className="prose max-w-none">
-                  <h3 className="text-lg font-semibold mb-4">推薦搭配</h3>
-                  <div className="grid gap-4">
-                    <div className="p-4 bg-muted rounded-lg">
-                      <h4 className="font-medium mb-2">海鮮料理</h4>
-                      <p className="text-sm text-muted-foreground">
-                        清爽的清酒最適合搭配新鮮海鮮，如生魚片、壽司、烤魚等，能襯托出海鮮的鮮甜。
-                      </p>
-                    </div>
-                    <div className="p-4 bg-muted rounded-lg">
-                      <h4 className="font-medium mb-2">日式料理</h4>
-                      <p className="text-sm text-muted-foreground">
-                        與傳統日式料理如天婦羅、串燒、茶碗蒸等完美搭配。
-                      </p>
-                    </div>
-                    <div className="p-4 bg-muted rounded-lg">
-                      <h4 className="font-medium mb-2">清淡台菜</h4>
-                      <p className="text-sm text-muted-foreground">
-                        也很適合搭配台灣清淡的家常菜，如蒸魚、炒青菜等。
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
+            <section>
+              <h2 className="text-2xl font-bold mb-6">用戶評論</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {mockReviews.map((review) => (
+                  <ReviewPost key={review.id} {...review} />
+                ))}
+              </div>
+            </section>
           </div>
 
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="bg-card border border-card-border rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-4">購買資訊</h3>
-                <Button className="w-full gap-2" data-testid="button-purchase">
+                <Button className="w-full gap-2 mb-6" data-testid="button-purchase">
                   <ExternalLink className="h-4 w-4" />
                   前往購買
                 </Button>
-                <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-medium mb-3">酒莊資訊</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">類型</span>
-                      <span className="font-medium">{mockBrewery.type}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">地區</span>
-                      <span className="font-medium">{mockBrewery.region}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">評分</span>
-                      <span className="font-medium">{mockBrewery.rating} / 5.0</span>
+                
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-medium mb-3">推薦搭配</h4>
+                    <div className="space-y-2">
+                      <div className="p-3 bg-muted rounded-lg">
+                        <div className="font-medium text-sm mb-1">海鮮料理</div>
+                        <p className="text-xs text-muted-foreground">
+                          生魚片、壽司、烤魚
+                        </p>
+                      </div>
+                      <div className="p-3 bg-muted rounded-lg">
+                        <div className="font-medium text-sm mb-1">日式料理</div>
+                        <p className="text-xs text-muted-foreground">
+                          天婦羅、串燒、茶碗蒸
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
