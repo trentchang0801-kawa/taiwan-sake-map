@@ -14,6 +14,7 @@ app.use((req, res, next) => {
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
+    // @ts-ignore preserve typing but allow apply
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
 
@@ -22,7 +23,11 @@ app.use((req, res, next) => {
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+        try {
+          logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+        } catch {
+          // ignore stringify errors
+        }
       }
 
       if (logLine.length > 80) {
@@ -57,15 +62,32 @@ app.use((req, res, next) => {
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  // For local development we will prefer binding to 127.0.0.1 (loopback)
+  // to avoid platform-specific issues binding to 0.0.0.0.
+  const portStr = process.env.PORT;
+  if (!portStr) {
+    throw new Error("PORT environment variable is not set");
+  }
+  const port = parseInt(portStr, 10);
+
+  // Try listen on loopback first (127.0.0.1). If that fails, try without host.
+  try {
+    server.listen(port, "127.0.0.1", () => {
+      log(`Server running on http://127.0.0.1:${port}`);
+    });
+  } catch (err) {
+    console.error("Failed to listen on 127.0.0.1:", err);
+    try {
+      server.listen(port, () => {
+        log(`Server running on port ${port} (no host specified)`);
+      });
+    } catch (err2) {
+      console.error("Also failed to listen without host:", err2);
+      // give a helpful message and exit so user can diagnose
+      console.error(
+        "Unable to start server. Possible causes: port in use, platform/network restrictions, or insufficient permissions."
+      );
+      process.exit(1);
+    }
+  }
 })();
