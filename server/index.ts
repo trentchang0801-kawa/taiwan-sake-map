@@ -61,29 +61,29 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // For local development we will prefer binding to 127.0.0.1 (loopback)
-  // to avoid platform-specific issues binding to 0.0.0.0.
+  // --- 修正版：自動判斷 host，Render 用 0.0.0.0，本機用 127.0.0.1 ---
   const portStr = process.env.PORT;
   if (!portStr) {
     throw new Error("PORT environment variable is not set");
   }
   const port = parseInt(portStr, 10);
 
-  // Try listen on loopback first (127.0.0.1). If that fails, try without host.
+  // 判斷是否為 Render 或 production 環境
+  const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+  const host = isProd ? "0.0.0.0" : "127.0.0.1";
+
   try {
-    server.listen(port, "127.0.0.1", () => {
-      log(`Server running on http://127.0.0.1:${port}`);
+    server.listen(port, host, () => {
+      log(`Server running on http://${host}:${port}`);
     });
   } catch (err) {
-    console.error("Failed to listen on 127.0.0.1:", err);
+    console.error(`Failed to listen on ${host}:${port}`, err);
     try {
       server.listen(port, () => {
         log(`Server running on port ${port} (no host specified)`);
       });
     } catch (err2) {
       console.error("Also failed to listen without host:", err2);
-      // give a helpful message and exit so user can diagnose
       console.error(
         "Unable to start server. Possible causes: port in use, platform/network restrictions, or insufficient permissions."
       );
