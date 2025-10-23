@@ -54,12 +54,13 @@ type UnauthorizedBehavior = "returnNull" | "throw";
 /**
  * getQueryFn - React Query 的 queryFn factory
  * 會把 queryKey join 後視為 path (與原來行為一致)，但會先套上 API_BASE
+ *
+ * 注意：這裡改寫為顯式泛型函式宣告以避免 'Cannot find name T' 的錯誤
  */
-export const getQueryFn: <T>(options: {
-  on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
+export function getQueryFn<T>(options: { on401: UnauthorizedBehavior }): QueryFunction<T> {
+  const { on401: unauthorizedBehavior } = options;
+
+  return async ({ queryKey }) => {
     // queryKey 可能是 ["api", "wineries"] 或 ["/api/wineries"]
     const path = Array.isArray(queryKey) ? queryKey.join("/") : String(queryKey);
     const fullUrl = buildUrl(path);
@@ -73,8 +74,9 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    return (await res.json()) as T;
   };
+}
 
 /** React Query client 保留你原本的 defaultOptions */
 export const queryClient = new QueryClient({
